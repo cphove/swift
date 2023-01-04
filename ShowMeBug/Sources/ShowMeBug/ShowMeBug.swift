@@ -1,8 +1,7 @@
-public struct ShowMeBug {
-    public private(set) var text = "Hello, World!"
-
-    public init() {
-        
+class ShowMeBug {
+    
+    func solution(_ a: Int, _ b: Int) -> Int {        
+        return a + b
     }
     
 }
