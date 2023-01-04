@@ -35,4 +35,42 @@ class ShowMeBug {
     func sub(_ a: Float, _ b: Float) -> Float {
         return a - b
     }
+
+    func createArray(_ initNum: Int, _ n: Int) -> [Int] {
+        var nums: [Int] = []
+        var num = initNum;
+        for _ in 0..<n {
+            nums.append(num)
+            num += 1
+        }
+        return nums
+    }
+
+    func createTwoDArray(_ row: Int, _ col: Int, _ base: Int) -> [[Int]] {
+        var i = 0, j = 0
+        var arr: [[Int]] = []
+        var num = base
+        while i < row {
+            var element: [Int] = []
+            while j < col {
+                element.append(num % 10)
+                num += 1
+                j += 1
+            }
+            arr.append(element)
+            i += 1
+            j = 0
+        }
+        return arr
+    }
+
+    func onlyElementEqual(_ a: Int) -> [Int] {
+        var nums: [Int] = []
+        var i = 0;
+        while i < a {
+            nums.append(a - i)
+            i += 1
+        }
+        return nums
+    }
 }
