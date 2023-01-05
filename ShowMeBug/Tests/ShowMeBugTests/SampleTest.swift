@@ -23,8 +23,11 @@ final class SampleTest: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
         let strs: [String] = ["lcy", "zzy", "wjc", "cph", "sby"]
-        let target: String = "cph"
-        XCTAssertTrue(ShowMeBug().find(strs, target))
+        let target: String = "cphx"
+        // XCTAssertTrue failed -
+        // XCTAssertTrue(ShowMeBug().find(strs, target))
+        // 推荐使用 XCTAssertEqual，XCTAssertEqual failed: ("false") is not equal to ("true")
+        XCTAssertEqual(ShowMeBug().find(strs, target), true)
     }
 
     func testSubsrting() throws {
