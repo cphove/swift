@@ -119,7 +119,7 @@ final class SampleTest: XCTestCase {
     }
 
     func testGetFloatArray() throws {
-        let expected: [Float] = [1.1, 2.2, 3.3, 4.4, 5.55]
+        let expected: [Float] = [1.1, 2.2, 3.3, 4.4]
         let n: Int = 5
         let start: Float = 1.1
         // 直接断言相等会失败
@@ -135,6 +135,18 @@ final class SampleTest: XCTestCase {
 
         // 推荐封装成一个方法，如
         assertFloatArrayEqual(ShowMeBug().getFloatArray(n, start), expected, accuracy: 0.001)
+    }
+
+    func testTwoDemDoubleArrayEqual() throws {
+        let expected: [[Double]] = [
+            [1.0, 2.0, 3.0],
+            [4.0, 5.0, 6.0],
+        ]
+        let actual: [[Double]] = [
+            [1.000001, 2.0, 3.0],
+            [4.0, 5.0, 6.000002]
+        ]
+        assertDoubleArrayEqual(actual, expected, accuracy: 0.001)
     }
 
     func elementEqual(actual: [[String]], expected: [[String]]) -> Bool {
@@ -165,6 +177,7 @@ final class SampleTest: XCTestCase {
     // 断言两个 Float 类型数组每个元素是否在一定精度下相等
     func assertFloatArrayEqual(_ actual: [Float], _ expected: [Float], accuracy: Float) {
         let msgIfFailed = "(\"\(actual)\") is not equal to (\"\(expected)\")"
+        XCTAssert(actual.count == expected.count, msgIfFailed)
         let equalOrNot = zip(actual, expected).allSatisfy({abs($0 - $1) <= accuracy})
         XCTAssert(equalOrNot, msgIfFailed)
     }
@@ -172,7 +185,18 @@ final class SampleTest: XCTestCase {
     // 断言两个 Double 类型数组每个元素是否在一定精度下相等
     func assertDoubleArrayEqual(_ actual: [Double], _ expected: [Double], accuracy: Double) {
         let msgIfFailed = "(\"\(actual)\") is not equal to (\"\(expected)\")"
+        XCTAssert(actual.count == expected.count, msgIfFailed)
         let equalOrNot = zip(actual, expected).allSatisfy({abs($0 - $1) <= accuracy})
         XCTAssert(equalOrNot, msgIfFailed)
+    }
+
+    func assertDoubleArrayEqual(_ actual: [[Double]], _ expected: [[Double]], accuracy: Double) {
+        let msgIfFailed = "(\"\(actual)\") is not equal to (\"\(expected)\")"
+        XCTAssert(actual.count == expected.count, msgIfFailed)
+        for i in 0..<expected.count {
+            XCTAssert(actual[i].count == expected[i].count, msgIfFailed)
+            let equalOrNot = zip(actual[i], expected[i]).allSatisfy({abs($0 - $1) <= accuracy})
+            XCTAssert(equalOrNot, msgIfFailed)
+        }  
     }
 }
