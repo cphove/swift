@@ -91,7 +91,8 @@ final class SampleTest: XCTestCase {
         let expected: [Int] = [3, 1, 2, 4, 5]
         let a = 5
         let actual = ShowMeBug().onlyElementEqual(a)
-        XCTAssertEqual(actual.sorted(), expected.sorted())
+        // XCTAssertEqual(actual.sorted(), expected.sorted())
+        assertOnlyArrayElementEqual(actual, expected)
     }
 
     func testOnlyElementEqualString() throws {
@@ -107,7 +108,7 @@ final class SampleTest: XCTestCase {
         ]
         let actual: [[String]] = [
             ["1", "6", "4"],
-            ["3", "2", "11"],
+            ["3", "2", "1"],
         ]
         // suggest this
         // XCTAssertTrue failed - The element of ("[["1", "6", "4"], ["3", "2", "11"]]") is not equal to ("[["3", "1", "2"], ["1", "4", "6"]]")
@@ -156,11 +157,19 @@ final class SampleTest: XCTestCase {
         return actualSet == expectedSet
     }
 
+    // 仅断言两个一维数组中的元素是否相同
+    func assertOnlyArrayElementEqual<Item: Hashable & Comparable>(_ actual: [Item], _ expected: [Item]) {
+        let msgIfFailed = "The element of (\"\(actual)\") is not equal to (\"\(expected)\")"
+        XCTAssert(actual.count == expected.count, msgIfFailed)
+        XCTAssert(actual.sorted() == expected.sorted(), msgIfFailed)
+    }
+
     // 仅断言两个二维数组中的一维数组的元素是否相同
     func assertOnlyArrayElementEqual<Item: Hashable & Comparable>(_ actual: [[Item]], _ expected: [[Item]]) {
+        let msgIfFailed = "The element of (\"\(actual)\") is not equal to (\"\(expected)\")"
+        XCTAssert(actual.count == expected.count, msgIfFailed)
         let actualSet = Set(actual.map({$0.sorted()}))
         let expectedSet = Set(expected.map({$0.sorted()}))
-        let msgIfFailed = "The element of (\"\(actual)\") is not equal to (\"\(expected)\")"
         XCTAssert(actualSet == expectedSet, msgIfFailed)
     }
 
