@@ -73,4 +73,14 @@ class ShowMeBug {
         }
         return nums
     }
+
+    func getFloatArray(_ n: Int, _ start: Float) -> [Float] {
+        var num: Float = start
+        var nums: [Float] = []
+        for _ in 0..<n {
+            nums.append(num)
+            num += start
+        }
+        return nums
+    }
 }

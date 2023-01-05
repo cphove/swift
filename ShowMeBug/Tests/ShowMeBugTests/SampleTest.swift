@@ -93,7 +93,7 @@ final class SampleTest: XCTestCase {
 
     func testOnlyElementEqualString() throws {
         let expected: [String] = ["lcy", "zzy", "wjc", "cph"]
-        let actual: [String] = ["zzy", "cph", "lcy", "wj"]
+        let actual: [String] = ["zzy", "cph", "lcy", "wjc"]
         XCTAssertEqual(actual.sorted(), expected.sorted())
     }
 
@@ -104,14 +104,34 @@ final class SampleTest: XCTestCase {
         ]
         let actual: [[String]] = [
             ["1", "6", "4"],
-            ["3", "2", "2"],
+            ["3", "2", "11"],
         ]
-        // 断言失败后，抛出错误信息
-        // let failedMsg = "The element of (\"\(actual)\") is not equal to (\"\(expected)\")"
-        // XCTAssertTrue(elementEqual(actual: actual, expected: expected), failedMsg)
-        // XCTAssertEqual(elementEqual(actual: actual, expected: expected), true, failedMsg)
-        // XCTAssert(elementEqual(actual: actual, expected: expected), failedMsg)
-        assertElementEqual(actual, expected)
+        // suggest this
+        // XCTAssertTrue failed - The element of ("[["1", "6", "4"], ["3", "2", "11"]]") is not equal to ("[["3", "1", "2"], ["1", "4", "6"]]")
+        assertOnlyArrayElementEqual(actual, expected)
+
+        // XCTAssertEqual failed: ("[["11", "2", "3"], ["1", "4", "6"]]") is not equal to ("[["1", "2", "3"], ["1", "4", "6"]]") - The element 
+        // of ("[["1", "6", "4"], ["3", "2", "11"]]") is not equal to ("[["3", "1", "2"], ["1", "4", "6"]]")
+        // assertOnlyElementEqual(actual, expected)
+    }
+
+    func testGetFloatArray() throws {
+        let expected: [Float] = [1.1, 2.2, 3.3, 4.4, 5.55]
+        let n: Int = 5
+        let start: Float = 1.1
+        // 直接断言相等会失败
+        // XCTAssertEqual failed: ("[1.1, 2.2, 3.3000002, 4.4, 5.5]") is not equal to ("[1.1, 2.2, 3.3, 4.4, 5.5]")
+        // XCTAssertEqual(ShowMeBug().getFloatArray(n, start), expected)
+        
+        // 正确做法 （ [Double]类型类似 ）
+        // let accuracy: Float = 0.001
+        // let actual = ShowMeBug().getFloatArray(n, start)
+        // let equalOrNot = zip(actual, expected).allSatisfy({abs($0 - $1) <= accuracy})
+        // let msgIfFailed = "(\"\(actual)\") is not equal to (\"\(expected)\")"
+        // XCTAssert(equalOrNot, msgIfFailed)
+
+        // 推荐封装成一个方法，如
+        assertFloatArrayEqual(ShowMeBug().getFloatArray(n, start), expected, accuracy: 0.001)
     }
 
     func elementEqual(actual: [[String]], expected: [[String]]) -> Bool {
@@ -121,10 +141,35 @@ final class SampleTest: XCTestCase {
         return actualSet == expectedSet
     }
 
-    func assertElementEqual<Item: Hashable & Comparable>(_ actual: [[Item]], _ expected: [[Item]]) {
+    // 仅断言两个二维数组中的一维数组的元素是否相同
+    func assertOnlyArrayElementEqual<Item: Hashable & Comparable>(_ actual: [[Item]], _ expected: [[Item]]) {
         let actualSet = Set(actual.map({$0.sorted()}))
         let expectedSet = Set(expected.map({$0.sorted()}))
         let msgIfFailed = "The element of (\"\(actual)\") is not equal to (\"\(expected)\")"
         XCTAssert(actualSet == expectedSet, msgIfFailed)
+    }
+
+    // 仅断言两个二维数组中的一维数组的元素是否相同
+    func assertOnlyElementEqual<Item: Hashable & Comparable>(_ actual: [[Item]], _ expected: [[Item]]) {
+        let actualSet = Set(actual.map({$0.sorted()}))
+        let expectedSet = Set(expected.map({$0.sorted()}))
+        let msgIfFailed = "The element of (\"\(actual)\") is not equal to (\"\(expected)\")"
+        // 断言失败信息会输出 Set 不相等的信息和自定义的失败信息
+        // 推荐使用 XCTAssert 或 XCTAssertTrue，断言失败时会输出 Set 不相等的信息
+        XCTAssertEqual(actualSet, expectedSet, msgIfFailed)
+    }
+
+    // 断言两个 Float 类型数组每个元素是否在一定精度下相等
+    func assertFloatArrayEqual(_ actual: [Float], _ expected: [Float], accuracy: Float) {
+        let msgIfFailed = "(\"\(actual)\") is not equal to (\"\(expected)\")"
+        let equalOrNot = zip(actual, expected).allSatisfy({abs($0 - $1) <= accuracy})
+        XCTAssert(equalOrNot, msgIfFailed)
+    }
+
+    // 断言两个 Double 类型数组每个元素是否在一定精度下相等
+    func assertDoubleArrayEqual(_ actual: [Double], _ expected: [Double], accuracy: Double) {
+        let msgIfFailed = "(\"\(actual)\") is not equal to (\"\(expected)\")"
+        let equalOrNot = zip(actual, expected).allSatisfy({abs($0 - $1) <= accuracy})
+        XCTAssert(equalOrNot, msgIfFailed)
     }
 }
