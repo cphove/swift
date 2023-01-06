@@ -1,11 +1,21 @@
+// 将使⽤ XCTest 执⾏测试
+
 import XCTest
 @testable import ShowMeBug
 
 final class HiddenTest: XCTestCase {
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        XCTAssertEqual(ShowMeBug().solution(1, 2), 3)
+
+    /*
+    #start
+    #name[测试用例1]
+    #input[a = 1, b = 2]
+    #expected[expected = 3]
+    #end
+     */
+    func testSolution1() throws {
+        let expected: Int = 3
+        let a: Int = 1
+        let b: Int = 2
+        XCTAssertEqual(ShowMeBug().solution(a, b), expected)
     }
 }
